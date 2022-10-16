@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useParams, useHistory } from 'react-router-dom'
-import { v4 as uuid } from 'uuid'
 
-// Would like to make the stars list look like the other ones from the home screen
 function UpdateMovie(props) {
    const [updateMovie, setUpdateMovie] = useState({})
    const { id } = useParams()
@@ -20,16 +18,16 @@ function UpdateMovie(props) {
          })
    }, [])
 
+   console.log(updateMovie)
+
    const handleChange = (e) => {
       e.preventDefault()
 
-      if (e.target.name === 'stars') {
-         return e.target.value.split(',')
-      }
+      let value = e.target.name === 'stars' ? e.target.value.split(',') : e.target.value
 
       setUpdateMovie({
          ...updateMovie,
-         [e.target.name]: e.target.value
+         [e.target.name]: value
       })
    }
 
@@ -55,10 +53,13 @@ function UpdateMovie(props) {
       axios
          .put(`http://localhost:5000/api/movies/${id}`, updateMovie)
          .then(res => {
+            const updatedMovie = props.movies.filter(movie =>
+               movie.id !== updateMovie.id
+            )
+
             props.setMovieList([
-               ...props.movies,
-               res.data
-            ])
+               res.data,
+               ...updatedMovie])
 
             push(`/movies/${id}`)
          })
@@ -102,18 +103,6 @@ function UpdateMovie(props) {
                   />
                </div>
                <h3>Actors</h3>
-
-               {[updateMovie.stars].map(star => (
-                  <div key={uuid()} className="movie-star">
-                     <input
-                        type='text'
-                        name='stars'
-                        onChange={handleChange}
-                        value={star}
-                     />
-                  </div>
-               ))}
-
                <input
                   type='text'
                   name='stars'

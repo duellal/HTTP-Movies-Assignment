@@ -23,13 +23,11 @@ function Movie(props) {
     push(`/update-movie/${params.id}`)
   }
 
-  const handleDelete = (e) => {
-    e.preventDefault()
-
+  const handleDelete = () => {
     axios
       .delete(`http://localhost:5000/api/movies/${params.id}`)
-      .then(() => {
-        const newMovieArr = props.movies.filter(movie => movie.id !== params.id)
+      .then(res => {
+        const newMovieArr = props.movies.filter(movie => movie.id !== res.data)
 
         props.setMovieList(newMovieArr)
         push('/')
