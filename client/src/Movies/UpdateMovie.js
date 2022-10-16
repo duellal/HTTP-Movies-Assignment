@@ -18,8 +18,6 @@ function UpdateMovie(props) {
          })
    }, [])
 
-   console.log(updateMovie)
-
    const handleChange = (e) => {
       e.preventDefault()
 
