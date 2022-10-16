@@ -3,7 +3,8 @@ import axios from 'axios'
 import { useParams, useHistory } from 'react-router-dom'
 import { v4 as uuid } from 'uuid'
 
-// Need to make an axios call to edit movies from api database
+//After upating the movie, cannot get back to home screen via home button - there is an error for some reason, the error does not occur anywhere else
+
 // Would like to make the stars list look like the other ones from the home screen
 function UpdateMovie(props) {
    const [updateMovie, setUpdateMovie] = useState({})
@@ -24,8 +25,11 @@ function UpdateMovie(props) {
    const handleChange = (e) => {
       e.preventDefault()
 
-      if (e.target.name === 'metascore') {
-         e.target.value = Math.max(100)
+      if (e.target.name === 'metascore' && e.target.value < 0) {
+         return e.target.value = 0
+      }
+      else if (e.target.name === 'metascore' && e.target.value > 100) {
+         return e.target.value = 100
       }
 
       setUpdateMovie({
@@ -37,13 +41,19 @@ function UpdateMovie(props) {
    const saveMovie = (e) => {
       e.preventDefault()
 
-      // Needs to be an axios call
-      props.setMovieList({
-         ...props.movies,
-         [updateMovie.id]: updateMovie
-      })
+      axios
+         .put(`http://localhost:5000/api/movies/${id}`, updateMovie)
+         .then(res => {
+            props.setMovieList({
+               ...props.movies,
+               [res.data.id]: res.data
+            })
 
-      push(`/movies/${id}`)
+            push(`/movies/${id}`)
+         })
+         .catch(err => {
+            console.log(err)
+         })
    };
 
    return (
@@ -73,6 +83,8 @@ function UpdateMovie(props) {
                   Metascore: <strong>
                      <input
                         type='number'
+                        min='0'
+                        max='100'
                         name='metascore'
                         onChange={handleChange}
                         value={updateMovie.metascore}
@@ -83,7 +95,12 @@ function UpdateMovie(props) {
 
                {[updateMovie.stars].map(star => (
                   <div key={uuid()} className="movie-star">
-                     {star}
+                     <input
+                        type='text'
+                        name='star'
+                        onChange={handleChange}
+                        value={star}
+                     />
                   </div>
                ))}
             </div>
