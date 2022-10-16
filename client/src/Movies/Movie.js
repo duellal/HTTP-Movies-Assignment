@@ -4,7 +4,7 @@ import { useParams, useHistory } from "react-router-dom";
 import MovieCard from "./MovieCard";
 
 function Movie(props) {
-  const [movie, setMovie] = useState(null);
+  const [movie, setMovie] = useState();
   const params = useParams();
   const { push } = useHistory()
 
@@ -28,8 +28,10 @@ function Movie(props) {
 
     axios
       .delete(`http://localhost:5000/api/movies/${params.id}`)
-      .then(res => {
-        props.setMovieList(res.data)
+      .then(() => {
+        const newMovieArr = props.movies.filter(movie => movie.id !== params.id)
+
+        props.setMovieList(newMovieArr)
         push('/')
       })
       .catch(err => {

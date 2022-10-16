@@ -3,8 +3,6 @@ import axios from 'axios'
 import { useParams, useHistory } from 'react-router-dom'
 import { v4 as uuid } from 'uuid'
 
-//After upating the movie, cannot get back to home screen via home button - there is an error for some reason, the error does not occur anywhere else
-
 // Would like to make the stars list look like the other ones from the home screen
 function UpdateMovie(props) {
    const [updateMovie, setUpdateMovie] = useState({})
@@ -24,6 +22,10 @@ function UpdateMovie(props) {
 
    const handleChange = (e) => {
       e.preventDefault()
+
+      if (e.target.name === 'stars') {
+         return e.target.value.split(',')
+      }
 
       setUpdateMovie({
          ...updateMovie,
@@ -53,10 +55,10 @@ function UpdateMovie(props) {
       axios
          .put(`http://localhost:5000/api/movies/${id}`, updateMovie)
          .then(res => {
-            props.setMovieList({
+            props.setMovieList([
                ...props.movies,
-               [res.data.id]: res.data
-            })
+               res.data
+            ])
 
             push(`/movies/${id}`)
          })
@@ -111,6 +113,13 @@ function UpdateMovie(props) {
                      />
                   </div>
                ))}
+
+               <input
+                  type='text'
+                  name='stars'
+                  onChange={handleChange}
+                  value={updateMovie.stars}
+               />
             </div>
 
             <button className='update-button' onClick={saveMovie}>

@@ -13,8 +13,6 @@ const AddMovie = (props) => {
    const [newMovie, setNewMovie] = useState(initialMovie)
    const { push } = useHistory()
 
-   console.log(newMovie)
-
    const handleChange = (e) => {
       e.preventDefault()
 
@@ -45,7 +43,7 @@ const AddMovie = (props) => {
 
       setNewMovie({
          ...newMovie,
-         [e.target.name]: [e.target.value]
+         [e.target.name]: e.target.value.split(',')
       })
    }
 
@@ -55,9 +53,7 @@ const AddMovie = (props) => {
       axios
          .post(`http://localhost:5000/api/movies`, newMovie)
          .then(res => {
-            props.setMovieList(
-               ...props.movies,
-               res.data)
+            props.setMovieList(res.data)
             push('/')
          })
          .catch(err => {
