@@ -25,6 +25,15 @@ function UpdateMovie(props) {
    const handleChange = (e) => {
       e.preventDefault()
 
+      setUpdateMovie({
+         ...updateMovie,
+         [e.target.name]: e.target.value
+      })
+   }
+
+   const handleChangeMetascore = (e) => {
+      e.preventDefault()
+
       if (e.target.name === 'metascore' && e.target.value < 0) {
          return e.target.value = 0
       }
@@ -34,7 +43,7 @@ function UpdateMovie(props) {
 
       setUpdateMovie({
          ...updateMovie,
-         [e.target.name]: e.target.value
+         [e.target.name]: parseInt(e.target.value)
       })
    }
 
@@ -80,16 +89,15 @@ function UpdateMovie(props) {
                   </em>
                </div>
                <div className="movie-metascore">
-                  Metascore: <strong>
-                     <input
-                        type='number'
-                        min='0'
-                        max='100'
-                        name='metascore'
-                        onChange={handleChange}
-                        value={updateMovie.metascore}
-                     />
-                  </strong>
+                  Metascore:
+                  <input
+                     type='number'
+                     min='0'
+                     max='100'
+                     name='metascore'
+                     onChange={handleChangeMetascore}
+                     value={updateMovie.metascore}
+                  />
                </div>
                <h3>Actors</h3>
 
@@ -97,7 +105,7 @@ function UpdateMovie(props) {
                   <div key={uuid()} className="movie-star">
                      <input
                         type='text'
-                        name='star'
+                        name='stars'
                         onChange={handleChange}
                         value={star}
                      />
